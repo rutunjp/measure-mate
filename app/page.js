@@ -1,19 +1,6 @@
-import AuthForm from '@/components/auth-form'
-import {
-  Card,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import Link from 'next/link'
-import SignInForm from '@/components/ui/signInForm'
+import SignInForm from "@/components/ui/signInForm";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="flex flex-col  mt-20 gap-6 w-full   m-auto lg:mt-20  ">
       <div className="flex flex-col w-full">
@@ -26,5 +13,5 @@ export default function Home() {
       </div>
       <SignInForm />
     </div>
-  )
+  );
 }

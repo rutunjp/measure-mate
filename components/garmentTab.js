@@ -1,5 +1,5 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import MeasurementForm from './measurementForm'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MeasurementForm from "./measurementForm";
 export default function GarmentTab() {
   return (
     <Tabs defaultValue="shirt" className="w-full">
@@ -8,11 +8,11 @@ export default function GarmentTab() {
         <TabsTrigger value="pant">Pant</TabsTrigger>
       </TabsList>
       <TabsContent value="shirt">
-        <MeasurementForm garment={'shirt'} />
+        <MeasurementForm garment={"shirt"} />
       </TabsContent>
       <TabsContent value="pant">
-        <MeasurementForm garment={'pant'} />
+        <MeasurementForm garment={"pant"} />
       </TabsContent>
     </Tabs>
-  )
+  );
 }

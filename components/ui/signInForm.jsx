@@ -5,12 +5,12 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Separator } from '@/components/ui/separator'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
 
 export default function SignInForm() {
   return (
@@ -32,7 +32,7 @@ export default function SignInForm() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function AuthForm() {
@@ -43,9 +43,9 @@ function AuthForm() {
           <Input type="phone" id="phone" placeholder="+91" />
         </div>
         <Button asChild>
-          <Link href="/users">Send OTP</Link>
+          <Link href="/customers">Send OTP</Link>
         </Button>
       </div>
     </form>
-  )
+  );
 }
