@@ -12,12 +12,7 @@ export async function getCustomers() {
     const database = client.db("measure-mate");
     const collection = database.collection("customers");
     const data = await collection.find().toArray();
-    const plainCustomers = data.map((customer) => ({
-      fname: customer.fname,
-      lname: customer.lname,
-    }));
-    console.log("plainCustomers", plainCustomers);
-    return plainCustomers;
+    console.log("!!!!data", data[0].garments["shirt"]);
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     throw error;

@@ -137,21 +137,23 @@ const garments = {
   },
 };
 
-export default function MeasurementForm({ garment }) {
-  const foundGarment = garments[garment];
+export default function MeasurementForm(props) {
+  const measurements = props.garmentMeasurement;
+  console.log("measurements", measurements);
+  const foundGarment = garments[props.garment];
   const selectedSchema = foundGarment.schema;
 
   const form = useForm({
     resolver: zodResolver(selectedSchema),
     defaultValues: {
-      collar: "",
-      chest: "",
-      waist: "",
-      biceps: "",
-      cuff: "",
-      frontWidth: "",
-      forearm: "",
-      sleeveLength: "",
+      collar: measurements.Collar,
+      chest: measurements.Chest,
+      waist: measurements.Waist,
+      biceps: measurements.Biceps,
+      cuff: measurements.Cuff,
+      frontWidth: measurements.FrontWidthWaist,
+      forearm: measurements.Forearm,
+      sleeveLength: measurements.SleeveLength,
     },
   });
   function handleSubmit(values) {
@@ -253,7 +255,7 @@ export default function MeasurementForm({ garment }) {
       },
     ],
   };
-  const formFields = formFieldsArray[garment];
+  const formFields = formFieldsArray[props.garment];
 
   return (
     <Form {...form}>

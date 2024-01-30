@@ -44,7 +44,7 @@ export default function Page() {
   );
 }
 
-export function CustomerList({ customers }) {
+export function CustomerList({ customers }) { 
   return (
     <Accordion type="single" collapsible className="w-full">
       {customers.map((customer) => (
@@ -58,7 +58,7 @@ export function CustomerList({ customers }) {
           </AccordionTrigger>
 
           <AccordionContent>
-            <GarmentTab />
+            <GarmentTab measurements={[customer.pant, customer.shirt]} />
           </AccordionContent>
         </AccordionItem>
       ))}
