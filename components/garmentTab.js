@@ -1,6 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MeasurementForm from "./measurementForm";
-export default function GarmentTab(garments) { 
+export default function GarmentTab({ measurements, customerid }) {
+  console.log("!!garments", measurements["pant"]);
+  console.log("!!garments", measurements);
   return (
     <Tabs defaultValue="shirt" className="w-full">
       <TabsList>
@@ -9,13 +11,15 @@ export default function GarmentTab(garments) {
       </TabsList>
       <TabsContent value="shirt">
         <MeasurementForm
-          garmentMeasurement={garments.measurements[0]}
+          customerid={customerid}
+          garmentMeasurement={measurements["shirt"]}
           garment={"shirt"}
         />
       </TabsContent>
       <TabsContent value="pant">
         <MeasurementForm
-          garmentMeasurement={garments.measurements[1]}
+          customerid={customerid}
+          garmentMeasurement={measurements["pant"]}
           garment={"pant"}
         />
       </TabsContent>

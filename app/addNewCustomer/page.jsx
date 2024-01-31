@@ -34,6 +34,7 @@ import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useMediaQuery } from "@react-hook/media-query";
+import { addCustomer } from "../utils";
 const newUserSchema = z.object({
   name: z.string().min(2).max(50),
 });
@@ -46,6 +47,7 @@ export default function Page() {
   });
   function handleSubmit(values) {
     console.log("values", values);
+    addCustomer(values);
   }
   if (isDesktop) {
     return (

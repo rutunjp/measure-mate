@@ -2,7 +2,6 @@
 import GarmentTab from "@/components/garmentTab";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-
 import { IoSearch } from "react-icons/io5";
 import {
   Accordion,
@@ -21,6 +20,7 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const fetchedCustomers = await getCustomers();
+        console.log("fetchedCustomers", fetchedCustomers);
         setCustomers(fetchedCustomers);
       } catch (error) {
         setError(error);
@@ -44,21 +44,18 @@ export default function Page() {
   );
 }
 
-export function CustomerList({ customers }) { 
+export function CustomerList({ customers }) {
   return (
     <Accordion type="single" collapsible className="w-full">
       {customers.map((customer) => (
-        <AccordionItem
-          value={customer.fname}
-          key={customer.fname}
-          {...customer}
-        >
-          <AccordionTrigger>
-            {customer.fname} {customer.lname}
-          </AccordionTrigger>
+        <AccordionItem value={customer.name} key={customer._id} {...customer}>
+          <AccordionTrigger>{customer.name}</AccordionTrigger>
 
           <AccordionContent>
-            <GarmentTab measurements={[customer.pant, customer.shirt]} />
+            <GarmentTab
+              measurements={{ pant: customer?.pant, shirt: customer?.shirt }}
+              customerid={customer._id}
+            />
           </AccordionContent>
         </AccordionItem>
       ))}
