@@ -32,34 +32,45 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMediaQuery } from "@react-hook/media-query";
-import { addCustomer } from "../utils";
+import { addCustomer } from "../app/utils";
+
+import { toast } from "sonner";
+
 const newUserSchema = z.object({
   name: z.string().min(2).max(50),
 });
-export default function Page() {
-  const [open, setOpen] = useState(false);
+export default function AddNewCustomer() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [open, setOpen] = useState(false);
   const newCustomerForm = useForm({
     resolver: zodResolver(newUserSchema),
     defaultValues: { name: "" },
   });
   function handleSubmit(values) {
     console.log("values", values);
-    addCustomer(values);
+    setOpen(!open);
+    {
+      addCustomer(values) && toast.success(`Created Customer: ${values.name}`);
+    }
   }
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
+          <Button variant="outline">
+            <PlusIcon />
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>New customer</DialogTitle>
             <Form {...newCustomerForm}>
-              <form onSubmit={newCustomerForm.handleSubmit(handleSubmit)}>
+              <form
+                className="flex flex-col gap-2"
+                onSubmit={newCustomerForm.handleSubmit(handleSubmit)}
+              >
                 <FormField
                   control={newCustomerForm.control || {}}
                   name="name"
@@ -79,8 +90,19 @@ export default function Page() {
                       </FormItem>
                     );
                   }}
-                />{" "}
-                <Button type="submit">Submit</Button>
+                />
+                <div className="flex flex-row w-full justify-between gap-4 ">
+                  <Button className="w-full" type="submit">
+                    Submit
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => setOpen(!open)}
+                  >
+                    Cancel
+                  </Button>
+                </div>{" "}
               </form>{" "}
             </Form>
           </DialogHeader>

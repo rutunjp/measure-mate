@@ -2,7 +2,9 @@
 import { MongoClient, ObjectId } from "mongodb";
 import { pantSchema, shirtSchema } from "@/components/measurementForm";
 import { z, ZodError } from "zod";
-const uri = "mongodb://localhost:27017/";
+import { toast } from "sonner";
+const uri =
+  "mongodb+srv://rutunj3:bdIWvHBPdZUFy0D5@cluster0.r8jddph.mongodb.net/";
 const client = new MongoClient(uri);
 
 export async function connectToDatabase() {
@@ -24,7 +26,7 @@ export async function closeDatabaseConnection() {
     throw error;
   }
 }
-const database = client.db("customers");
+const database = client.db("measure-mate");
 const collection = database.collection("customers");
 
 export async function getCustomers() {
@@ -45,9 +47,12 @@ export async function addCustomer({ name }) {
   try {
     await collection.insertOne({ name: name });
     console.log("Inserted new customer:", name);
+
+    return 1;
   } catch (error) {
     console.error("Error adding new customer to MongoDB:", error);
     throw error;
+    return 0;
   }
 }
 
@@ -66,6 +71,25 @@ export async function updateCustomer(props) {
       console.log(`No document matched the filter: ${filter}`);
     } else {
       console.log(`Customer updated successfully. Shirt: ${props?.shirt}`);
+      return 1;
+    }
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    return 0;
+  }
+}
+
+export async function deleteCustomer(customerid) {
+  try {
+    const customerId = new ObjectId(customerid);
+    const filter = { _id: customerId };
+
+    const result = await collection.deleteOne(filter);
+    if (result.modifiedCount === 0) {
+      console.log(`DETELEEL document matched the filter: ${filter}`);
+    } else {
+      console.log(`Customer deleted successfully.`);
+      return 1;
     }
   } catch (error) {
     console.error("Error updating customer:", error);

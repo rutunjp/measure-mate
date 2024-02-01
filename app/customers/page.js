@@ -1,7 +1,7 @@
 "use client";
 import GarmentTab from "@/components/garmentTab";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { IoSearch } from "react-icons/io5";
 import {
   Accordion,
@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { getCustomers } from "../utils";
+import AddNewCustomer from "@/components/addNewCustomer";
+
 export default function Page() {
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +22,6 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const fetchedCustomers = await getCustomers();
-        console.log("fetchedCustomers", fetchedCustomers);
         setCustomers(fetchedCustomers);
       } catch (error) {
         setError(error);
@@ -46,10 +47,10 @@ export default function Page() {
 
 export function CustomerList({ customers }) {
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion collapsible className="w-full">
       {customers.map((customer) => (
         <AccordionItem value={customer.name} key={customer._id} {...customer}>
-          <AccordionTrigger>{customer.name}</AccordionTrigger>
+          <AccordionTrigger>{customer.name} </AccordionTrigger>
 
           <AccordionContent>
             <GarmentTab
@@ -70,6 +71,7 @@ export function SearchBar() {
       <Button type="submit">
         <IoSearch size={24} />
       </Button>
+      <AddNewCustomer />
     </div>
   );
 }

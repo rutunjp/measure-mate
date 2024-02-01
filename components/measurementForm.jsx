@@ -1,6 +1,7 @@
 "use client";
-import { updateCustomer } from "@/app/utils";
+import { deleteCustomer, updateCustomer } from "@/app/utils";
 import { Button } from "./ui/button";
+import { CiTrash } from "react-icons/ci";
 import {
   Form,
   FormField,
@@ -13,7 +14,9 @@ import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import DeleteDialog from "./deleteDialog";
+import { ToastProvider } from "./ui/toast";
 
 export const pantSchema = z.object({
   chest: z.coerce.number(),
@@ -192,38 +195,53 @@ export default function MeasurementForm({
   }
 
   return (
-    <Form {...form}>
-      <form className="w-full" onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="flex flex-col gap-2 ">
-          <div className="grid grid-cols-2 gap-2  ">
-            {formInputFields.map((formField) => {
-              return (
-                <FormField
-                  control={form.control || {}}
-                  key={formField}
-                  name={formField}
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>{formField.toUpperCase()}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={formField}
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-              );
-            })}
+    <ToastProvider>
+      <Form {...form}>
+        <form className="w-full" onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className="flex flex-col gap-2 ">
+            <div className="grid grid-cols-2 gap-2  ">
+              {formInputFields.map((formField) => {
+                return (
+                  <FormField
+                    control={form.control || {}}
+                    key={formField}
+                    name={formField}
+                    render={({ field }) => {
+                      return (
+                        <FormItem>
+                          <FormLabel>{formField.toUpperCase()}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={formField}
+                              type="number"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                );
+              })}
+            </div>
+            <div className="w-full inline-flex gap-2 m-auto">
+              <Button className="w-3/4" type="submit">
+                Submit
+              </Button>{" "}
+              {/* <Button
+              className="w-1/4"
+              variant="destructive"
+              size="icon"
+              onClick={() => handleDelete()}
+            >
+              <CiTrash className="w-4" />
+            </Button> */}
+              <DeleteDialog customerId={customerid} />
+            </div>
           </div>
-          <Button type="submit">Submit</Button>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </ToastProvider>
   );
 }
