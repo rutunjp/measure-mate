@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="w-10/12 md:w-3/4 lg:w-2/4 flex flex-col m-auto items-center  rounded-md">
+        <div className="w-10/12 md:w-3/4 lg:w-3/4 flex flex-col m-auto items-center rounded-md overflow-hidden ">
           <Toaster richColors />
           {children}
         </div>

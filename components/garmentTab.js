@@ -4,23 +4,21 @@ export default function GarmentTab({ measurements, customerid }) {
   console.log("!!garments", measurements["pant"]);
   console.log("!!garments", measurements);
   return (
-    <Tabs defaultValue="shirt" className="w-full">
+    <Tabs defaultValue="top" className="w-full">
       <TabsList>
-        <TabsTrigger value="shirt">Shirt</TabsTrigger>
-        <TabsTrigger value="pant">Pant</TabsTrigger>
+        <TabsTrigger value="top">Top</TabsTrigger>
+        <TabsTrigger value="bottom">Bottom</TabsTrigger>
       </TabsList>
-      <TabsContent value="shirt">
+      <TabsContent value="top">
         <MeasurementForm
           customerid={customerid}
-          garmentMeasurement={measurements["shirt"]}
-          garment={"shirt"}
+          bodyPart={measurements["top"]}
         />
       </TabsContent>
-      <TabsContent value="pant">
+      <TabsContent value="bottom">
         <MeasurementForm
           customerid={customerid}
-          garmentMeasurement={measurements["pant"]}
-          garment={"pant"}
+          bodyPart={measurements["bottom"]}
         />
       </TabsContent>
     </Tabs>

@@ -1,5 +1,5 @@
 "use client";
-import { deleteCustomer, updateCustomer } from "@/app/utils";
+import { deleteCustomer, getCustomers, updateCustomer } from "@/app/utils";
 import { Button } from "./ui/button";
 import { CiTrash } from "react-icons/ci";
 import {
@@ -14,144 +14,31 @@ import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import DeleteDialog from "./deleteDialog";
 import { ToastProvider } from "./ui/toast";
+import { measurements } from "@/app/config/measurements";
 
-export const pantSchema = z.object({
-  chest: z.coerce.number(),
-  cuff: z.coerce.number(),
-  waist: z.coerce.number(),
-  frontWidth: z.coerce.number(),
-  forearm: z.coerce.number(),
-  sleeveLength: z.coerce.number(),
-});
-export const shirtSchema = z.object({
-  collar: z.coerce.number(),
-  chest: z.coerce.number(),
-  cuff: z.coerce.number(),
-  frontWidth: z.coerce.number(),
-  forearm: z.coerce.number(),
-  sleeveLength: z.coerce.number(),
-});
+function createNumberSchema(fieldNames) {
+  return z.object({
+    ...fieldNames.reduce((acc, name) => ({ ...acc, [name]: z.number() }), {}),
+  });
+}
 
-const garments = {
-  pant: {
-    schema: pantSchema,
-    fields: [
-      {
-        label: "Collar",
-        placeholder: "Collar",
-        id: "collar",
-        type: "number",
-      },
-      {
-        label: "Chest",
-        placeholder: "Chest",
-        id: "chest",
-        type: "number",
-      },
-      {
-        label: "Waist",
-        placeholder: "Waist",
-        id: "waist",
-        type: "number",
-      },
-      {
-        label: "Front Width",
-        placeholder: "Front Width",
-        id: "frontWidth",
-        type: "number",
-      },
-      {
-        label: "Sleeve Length",
-        placeholder: "Sleeve Length",
-        id: "sleeveLength",
-        type: "number",
-      },
-      {
-        label: "Forearm",
-        placeholder: "Forearm",
-        id: "forearm",
-        type: "number",
-      },
-      {
-        label: "Biceps",
-        placeholder: "Biceps",
-        id: "biceps",
-        type: "number",
-      },
-      {
-        label: "Cuff",
-        placeholder: "Cuff",
-        id: "cuff",
-        type: "number",
-      },
-    ],
-  },
-  shirt: {
-    schema: shirtSchema,
-    fields: [
-      {
-        label: "Collar",
-        placeholder: "Collar",
-        id: "collar",
-        type: "number",
-      },
-      {
-        label: "Chest",
-        placeholder: "Chest",
-        id: "chest",
-        type: "number",
-      },
-      {
-        label: "Waist",
-        placeholder: "Waist",
-        id: "waist",
-        type: "number",
-      },
-      {
-        label: "Front Width",
-        placeholder: "Front Width",
-        id: "frontWidth",
-        type: "number",
-      },
-      {
-        label: "Sleeve Length",
-        placeholder: "Sleeve Length",
-        id: "sleeveLength",
-        type: "number",
-      },
-      {
-        label: "Forearm",
-        placeholder: "Forearm",
-        id: "forearm",
-        type: "number",
-      },
-      {
-        label: "Biceps",
-        placeholder: "Biceps",
-        id: "biceps",
-        type: "number",
-      },
-      {
-        label: "Cuff",
-        placeholder: "Cuff",
-        id: "cuff",
-        type: "number",
-      },
-    ],
-  },
-};
+export const bottomSchema = createNumberSchema(
+  Object.keys(measurements.maleBottom)
+);
+export const topSchema = createNumberSchema(Object.keys(measurements.maleTop));
 
-export default function MeasurementForm({
-  garmentMeasurement,
-  garment,
-  customerid,
-}) {
+export default function MeasurementForm({ customerid, bodyPart }) {
+  const [selectedSchema, setSchema] = useState(topSchema);
   const measurements = garmentMeasurement;
-  const foundGarment = garments[garment];
-  const selectedSchema = foundGarment.schema;
+  if (bodyPart == "top") {
+    setSchema(topSchema);
+  } else if (bodyPart == "bottom") {
+    setSchema(bottomSchema);
+  }
+
   const formInputFields = Object.keys(selectedSchema.shape);
 
   const form = useForm({
@@ -187,7 +74,6 @@ export default function MeasurementForm({
 
     const passValues = {
       customerid,
-      garment: [garment],
       garmentMeasurement: values,
     };
 
