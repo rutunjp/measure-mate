@@ -18,10 +18,17 @@ import { useContext, useEffect, useState } from "react";
 import DeleteDialog from "./deleteDialog";
 import { ToastProvider } from "./ui/toast";
 import { measurements } from "@/app/config/measurements";
+import { toast } from "sonner";
 
 function createNumberSchema(fieldNames) {
   return z.object({
-    ...fieldNames.reduce((acc, name) => ({ ...acc, [name]: z.number() }), {}),
+    ...fieldNames.reduce(
+      (acc, name) => ({
+        ...acc,
+        [name]: z.coerce.number(),
+      }),
+      {}
+    ),
   });
 }
 
@@ -30,54 +37,36 @@ export const bottomSchema = createNumberSchema(
 );
 export const topSchema = createNumberSchema(Object.keys(measurements.maleTop));
 
-export default function MeasurementForm({ customerid, bodyPart }) {
+export default function MeasurementForm({
+  customerid,
+  bodyPart,
+  customerMeasurements,
+}) {
   const [selectedSchema, setSchema] = useState(topSchema);
-  const measurements = garmentMeasurement;
-  if (bodyPart == "top") {
-    setSchema(topSchema);
-  } else if (bodyPart == "bottom") {
-    setSchema(bottomSchema);
-  }
+  useEffect(() => {
+    if (bodyPart === "top") {
+      setSchema(topSchema);
+    } else if (bodyPart === "bottom") {
+      setSchema(bottomSchema);
+    }
+  }, [bodyPart]);
 
   const formInputFields = Object.keys(selectedSchema.shape);
 
   const form = useForm({
     resolver: zodResolver(selectedSchema),
-    defaultValues: measurements
-      ? {
-          collar: measurements.Collar || "",
-          chest: measurements.Chest || "",
-          waist: measurements.Waist || "",
-          biceps: measurements.Biceps || "",
-          cuff: measurements.Cuff || "",
-          frontWidth: measurements.FrontWidthWaist || "",
-          forearm: measurements.Forearm || "",
-          sleeveLength: measurements.SleeveLength || "",
-        }
-      : {
-          collar: "",
-          chest: "",
-          waist: "",
-          biceps: "",
-          cuff: "",
-          frontWidth: "",
-          forearm: "",
-          sleeveLength: "",
-        },
+    defaultValues: customerMeasurements
+      ? customerMeasurements
+      : formInputFields.reduce((acc, fieldName) => {
+          return { ...acc, [fieldName]: "yet to enter" };
+        }, {}),
   });
-  useEffect(() => {
-    // Reset the form values when measurements change
-    form.reset(measurements);
-  }, [measurements]);
   function handleSubmit(values) {
-    console.log("Submitted values:", values);
-
-    const passValues = {
-      customerid,
-      garmentMeasurement: values,
-    };
-
-    updateCustomer(passValues);
+    const updateSuccess = updateCustomer({ customerid, values, bodyPart });
+    if (updateSuccess) {
+      toast.info("Updated Values");
+    }
+    console.log("change ", customerid, values, bodyPart);
   }
 
   return (
@@ -98,9 +87,9 @@ export default function MeasurementForm({ customerid, bodyPart }) {
                           <FormLabel>{formField.toUpperCase()}</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder={formField}
                               type="number"
                               {...field}
+                              placeholder="yet to enter"
                             />
                           </FormControl>
                           <FormMessage />
@@ -114,15 +103,7 @@ export default function MeasurementForm({ customerid, bodyPart }) {
             <div className="w-full inline-flex gap-2 m-auto">
               <Button className="w-3/4" type="submit">
                 Submit
-              </Button>{" "}
-              {/* <Button
-              className="w-1/4"
-              variant="destructive"
-              size="icon"
-              onClick={() => handleDelete()}
-            >
-              <CiTrash className="w-4" />
-            </Button> */}
+              </Button>
               <DeleteDialog customerId={customerid} />
             </div>
           </div>

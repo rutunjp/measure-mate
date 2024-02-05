@@ -3,6 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import { pantSchema, shirtSchema } from "@/components/measurementForm";
 import { z, ZodError } from "zod";
 import { toast } from "sonner";
+
 const uri =
   "mongodb+srv://rutunj3:bdIWvHBPdZUFy0D5@cluster0.r8jddph.mongodb.net/";
 const client = new MongoClient(uri);
@@ -36,7 +37,7 @@ export async function getCustomers() {
       ...customer,
       _id: customer._id.toString(),
     }));
-    return data;
+    return customers;
   } catch (error) {
     console.error("Error fetching customers from MongoDB:", error);
     throw error;
@@ -56,21 +57,19 @@ export async function addCustomer({ name }) {
   }
 }
 
-export async function updateCustomer(props) {
+export async function updateCustomer({ bodyPart, values, customerid }) {
   try {
-    const customerId = new ObjectId(props.customerid);
+    console.log("props", { bodyPart, values, customerid });
+    const customerId = new ObjectId(customerid);
     const filter = { _id: customerId };
 
-    const garment = props.garment;
-
-    const update = { $set: { [garment]: props.garmentMeasurement } };
-
-    const result = await collection.updateOne(filter, update);
+    const update = { $set: { [bodyPart]: values } };
+    const result = await collection.updateOne(filter, update, { upsert: true });
 
     if (result.modifiedCount === 0) {
       console.log(`No document matched the filter: ${filter}`);
     } else {
-      console.log(`Customer updated successfully. Shirt: ${props?.shirt}`);
+      console.log(`Customer updated successfully. Shirt: ${values}`);
       return 1;
     }
   } catch (error) {
@@ -89,6 +88,7 @@ export async function deleteCustomer(customerid) {
       console.log(`DETELEEL document matched the filter: ${filter}`);
     } else {
       console.log(`Customer deleted successfully.`);
+
       return 1;
     }
   } catch (error) {

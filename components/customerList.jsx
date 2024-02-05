@@ -9,18 +9,19 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-
 import AddNewCustomer from "@/components/addNewCustomer";
 import { getCustomers } from "@/app/utils";
 export default function CustomerList() {
   const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedCustomers = await getCustomers();
         setCustomers(fetchedCustomers);
+        console.log("fetchedCustomers", fetchedCustomers);
       } catch (error) {
         setError(error);
       } finally {
@@ -38,8 +39,9 @@ export default function CustomerList() {
         <p>Error fetching customers: {error.message}</p>
       ) : (
         <>
-          <SearchBar />
+          <SearchBar setCustomers={setCustomers} />
           <Accordion collapsible className="w-full">
+            {console.log("customers", customers)}
             {customers.map((customer) => (
               <AccordionItem
                 value={customer.name}
@@ -47,33 +49,32 @@ export default function CustomerList() {
                 {...customer}
               >
                 <AccordionTrigger>{customer.name} </AccordionTrigger>
-
                 <AccordionContent>
                   <GarmentTab
                     measurements={{
-                      pant: customer?.pant,
-                      shirt: customer?.shirt,
+                      top: customer?.top,
+                      bottom: customer?.bottom,
                     }}
                     customerid={customer._id}
                   />
                 </AccordionContent>
               </AccordionItem>
             ))}
-          </Accordion>{" "}
+          </Accordion>
         </>
       )}
     </>
   );
 }
 
-export function SearchBar() {
+export function SearchBar({ setCustomers }) {
   return (
     <div className="flex w-full  items-center space-x-2">
       <Input type="text" placeholder="Customer" />
       <Button type="submit">
         <IoSearch size={24} />
       </Button>
-      <AddNewCustomer />
+      <AddNewCustomer setCustomers={setCustomers} />
     </div>
   );
 }

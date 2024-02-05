@@ -11,13 +11,8 @@ export const measurements = {
   },
   maleBottom: {
     length: "Length",
-    shoulder: "Shoulder",
-    longSleeve: "Long Sleeve",
-    collar: "Collar",
-    chest: "Chest",
     cuff: "Cuff",
     sit: "Sit",
-    stomach: "Stomach",
   },
 
   pant: {

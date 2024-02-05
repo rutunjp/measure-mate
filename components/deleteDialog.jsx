@@ -10,15 +10,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+import { Icons } from "@/components/icons";
 import { Button } from "./ui/button";
 import { CiTrash } from "react-icons/ci";
-import { deleteCustomer } from "@/app/utils";
+import { deleteCustomer, getCustomers } from "@/app/utils";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function DeleteDialog({ customerId }) {
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
+  const router = useRouter();
   async function handleDelete() {
     try {
       if (await deleteCustomer(customerId)) {
+        setIsDeleteLoading(false);
         toast.error("Event has been created", {
           description: "Sunday, December 03, 2023 at 9:00 AM",
           action: {
@@ -26,8 +35,8 @@ export default function DeleteDialog({ customerId }) {
             onClick: () => console.log("Undo"),
           },
         });
-        console.log("deleted");
       }
+      setShowDeleteAlert(!showDeleteAlert);
     } catch (error) {
       console.log("Error deleting customer:", customerId, error);
     }
@@ -35,11 +44,15 @@ export default function DeleteDialog({ customerId }) {
 
   return (
     <>
-      <AlertDialog>
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
         <AlertDialogTrigger>
-          <Button variant="destructive" size="icon">
-            <CiTrash className="w-4" />
-          </Button>
+          {isDeleteLoading ? (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Button variant="destructive" size="icon">
+              <CiTrash className="w-4" />
+            </Button>
+          )}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -51,7 +64,10 @@ export default function DeleteDialog({ customerId }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
+              onClick={async (e) => {
+                e.preventDefault();
+                setIsDeleteLoading(true);
+
                 handleDelete();
               }}
             >

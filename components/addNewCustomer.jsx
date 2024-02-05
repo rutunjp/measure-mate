@@ -34,14 +34,16 @@ import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "@react-hook/media-query";
-import { addCustomer } from "../app/utils";
+import { addCustomer, getCustomers } from "../app/utils";
 
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const newUserSchema = z.object({
   name: z.string().min(2).max(50),
 });
 export default function AddNewCustomer() {
+  const router = useRouter();
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, setOpen] = useState(false);
   const newCustomerForm = useForm({
@@ -53,6 +55,7 @@ export default function AddNewCustomer() {
     setOpen(!open);
     {
       addCustomer(values) && toast.success(`Created Customer: ${values.name}`);
+      getCustomers();
     }
   }
   if (isDesktop) {
@@ -102,8 +105,8 @@ export default function AddNewCustomer() {
                   >
                     Cancel
                   </Button>
-                </div>{" "}
-              </form>{" "}
+                </div>
+              </form>
             </Form>
           </DialogHeader>
         </DialogContent>
@@ -122,7 +125,7 @@ export default function AddNewCustomer() {
             <DrawerTitle>New Customer</DrawerTitle>
             <DrawerDescription>
               Make changes to your profile here. Click save when done.
-            </DrawerDescription>{" "}
+            </DrawerDescription>
             <Form {...newCustomerForm}>
               <form onSubmit={newCustomerForm.handleSubmit(handleSubmit)}>
                 <FormField
@@ -144,9 +147,9 @@ export default function AddNewCustomer() {
                       </FormItem>
                     );
                   }}
-                />{" "}
+                />
                 <Button type="submit">Submit</Button>
-              </form>{" "}
+              </form>
             </Form>
           </DrawerHeader>
 

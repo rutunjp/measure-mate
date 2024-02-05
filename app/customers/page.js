@@ -1,4 +1,5 @@
-"use client"; 
+/* eslint-disable @next/next/no-async-client-component */
+"use client";
 import CustomerList from "@/components/customerList";
 
 export default function Page() {
