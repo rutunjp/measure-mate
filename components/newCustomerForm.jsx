@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,24 +9,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Input } from './ui/input'
-import Link from 'next/link'
-import { Button } from './ui/button'
-import { IoIosClose } from 'react-icons/io'
+} from "@/components/ui/alert-dialog";
+import { Input } from "./ui/input";
+import { IoIosClose } from "react-icons/io";
 
-import { IoAddSharp } from 'react-icons/io5'
+import { IoAddSharp } from "react-icons/io5";
 export default function NewCustomerForm() {
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-
-          <IoAddSharp size={24} />
-          </AlertDialogTrigger>
+        <IoAddSharp size={24} />
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <div className="flex flex-row w-full justify-between ">
-            <AlertDialogTitle>Add New Customer</AlertDialogTitle>{' '}
+            <AlertDialogTitle>Add New Customer</AlertDialogTitle>{" "}
             <AlertDialogCancel>
               <IoIosClose />
             </AlertDialogCancel>
@@ -37,13 +34,13 @@ export default function NewCustomerForm() {
                 <Input type="text" id="fname" placeholder="First Name" />
                 <Input type="text" id="lname" placeholder="Last Name" />
               </div>
-              <Input type="phone" id="phone" placeholder="+91" />
+              <Input type="phone" id="phone" placeholder="+91" /> 
               <Input type="text" id="notes" placeholder="Notes..." />
-              <AlertDialogAction>Submit</AlertDialogAction>{' '}
+              <AlertDialogAction>Submit</AlertDialogAction>{" "}
             </form>
           </AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

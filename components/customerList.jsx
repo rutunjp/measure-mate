@@ -16,12 +16,13 @@ export default function CustomerList() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedCustomers = await getCustomers();
         setCustomers(fetchedCustomers);
-        console.log("fetchedCustomers", fetchedCustomers);
+        console.log(" fetchedCustomers", fetchedCustomers);
       } catch (error) {
         setError(error);
       } finally {
