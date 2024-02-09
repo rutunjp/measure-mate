@@ -1,6 +1,7 @@
 "use client";
 import { deleteCustomer, getCustomers, updateCustomer } from "@/app/utils";
 import { Button } from "./ui/button";
+
 import { CiTrash } from "react-icons/ci";
 import {
   Form,
@@ -17,8 +18,9 @@ import * as z from "zod";
 import { useContext, useEffect, useState } from "react";
 import DeleteDialog from "./deleteDialog";
 import { ToastProvider } from "./ui/toast";
-import { measurements } from "@/app/config/measurements";
+import { measurements } from "@/config/measurements";
 import { toast } from "sonner";
+import Link from "next/link";
 
 function createNumberSchema(fieldNames) {
   return z.object({
@@ -72,7 +74,13 @@ export default function MeasurementForm({
   return (
     <ToastProvider>
       <Form {...form}>
-        <form className="w-full" onSubmit={form.handleSubmit(handleSubmit)}>
+        <form
+          className="w-full"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit(handleSubmit);
+          }}
+        >
           <div className="flex flex-col gap-2 ">
             <div className="grid grid-cols-2 gap-2  ">
               {formInputFields.map((formField) => {
@@ -105,6 +113,12 @@ export default function MeasurementForm({
                 Submit
               </Button>
               <DeleteDialog customerId={customerid} />
+
+              <Button variant="outline">
+                <Link variant="button" href={`/newOrder/${customerid}`} >
+                  New Order
+                </Link>
+              </Button>
             </div>
           </div>
         </form>

@@ -43,7 +43,7 @@ function AuthForm() {
           <Input type="phone" id="phone" placeholder="+91" />
         </div>
         <Button asChild>
-          <Link href="/customers">Send OTP</Link>
+          <Link href="/dashboard">Send OTP</Link>
         </Button>
       </div>
     </form>

@@ -1,6 +1,7 @@
+"use client";
 import GarmentTab from "@/components/garmentTab";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { IoSearch } from "react-icons/io5";
 import {
   Accordion,
@@ -10,60 +11,30 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import AddNewCustomer from "@/components/addNewCustomer";
-import { getCustomers } from "@/app/utils";
+import CustomersContext from "@/app/CustomerContext";
+
 export default function CustomerList() {
-  const [customers, setCustomers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedCustomers = await getCustomers();
-        setCustomers(fetchedCustomers);
-        console.log(" fetchedCustomers", fetchedCustomers);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
+  const customers = useContext(CustomersContext);
   return (
     <>
-      {isLoading ? (
-        <p>Loading customers...</p>
-      ) : error ? (
-        <p>Error fetching customers: {error.message}</p>
-      ) : (
-        <>
-          <SearchBar setCustomers={setCustomers} />
-          <Accordion collapsible className="w-full">
-            {console.log("customers", customers)}
-            {customers.map((customer) => (
-              <AccordionItem
-                value={customer.name}
-                key={customer._id}
-                {...customer}
-              >
-                <AccordionTrigger>{customer.name} </AccordionTrigger>
-                <AccordionContent>
-                  <GarmentTab
-                    measurements={{
-                      top: customer?.top,
-                      bottom: customer?.bottom,
-                    }}
-                    customerid={customer._id}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </>
-      )}
+      <SearchBar />
+      <Accordion collapsible className="w-full">
+        {console.log("customers", customers)}
+        {customers?.map((customer) => (
+          <AccordionItem value={customer.name} key={customer._id} {...customer}>
+            <AccordionTrigger>{customer.name} </AccordionTrigger>
+            <AccordionContent>
+              <GarmentTab
+                measurements={{
+                  top: customer?.top,
+                  bottom: customer?.bottom,
+                }}
+                customerid={customer._id}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </>
   );
 }

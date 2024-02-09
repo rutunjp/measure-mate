@@ -18,23 +18,24 @@ import { deleteCustomer, getCustomers } from "@/app/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Router } from "next/router";
 
 export default function DeleteDialog({ customerId }) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-
   const router = useRouter();
   async function handleDelete() {
     try {
       if (await deleteCustomer(customerId)) {
         setIsDeleteLoading(false);
-        toast.error("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
+        toast.error("Customer deleted", {
+          // description: "Sunday, December 03, 2023 at 9:00 AM",
           action: {
             label: "Undo",
             onClick: () => console.log("Undo"),
           },
         });
+        location.reload();
       }
       setShowDeleteAlert(!showDeleteAlert);
     } catch (error) {

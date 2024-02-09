@@ -1,6 +1,8 @@
+"use client";
 import SignInForm from "@/components/ui/signInForm";
 
-export default async function Home() {
+import { useState, useEffect } from "react";
+export default function Home() {
   return (
     <div className="flex flex-col  mt-20 gap-6 w-full   m-auto lg:mt-20  ">
       <div className="flex flex-col w-full">

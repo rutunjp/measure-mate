@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -30,12 +29,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "@react-hook/media-query";
 import { addCustomer, getCustomers } from "../app/utils";
-
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -50,12 +48,25 @@ export default function AddNewCustomer() {
     resolver: zodResolver(newUserSchema),
     defaultValues: { name: "" },
   });
-  function handleSubmit(values) {
+  async function handleSubmit(values) {
     console.log("values", values);
-    setOpen(!open);
-    {
-      addCustomer(values) && toast.success(`Created Customer: ${values.name}`);
-      getCustomers();
+    try {
+      console.log("values", values);
+      setOpen(false); // Close the dialog/drawer after successful submission
+      const success = await addCustomer(values);
+      if (success) {
+        toast.success(`Created Customer: ${values.name}`);
+        const updatedCustomers = await getCustomers(); // Fetch the updated list of customers
+        console.log("updatedCustomers", updatedCustomers);
+        location.reload();
+      } else {
+        toast.error("Failed to add customer. Please try again.");
+      }
+    } catch (error) {
+      toast.error(
+        "An error occurred while adding the customer. Please try again later."
+      );
+      console.error(error);
     }
   }
   if (isDesktop) {
