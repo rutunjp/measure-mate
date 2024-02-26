@@ -59,28 +59,24 @@ export default function MeasurementForm({
     resolver: zodResolver(selectedSchema),
     defaultValues: customerMeasurements
       ? customerMeasurements
-      : formInputFields.reduce((acc, fieldName) => {
-          return { ...acc, [fieldName]: "yet to enter" };
+      : formInputFields.reduce((acc) => {
+          return { ...acc };
         }, {}),
   });
   function handleSubmit(values) {
     const updateSuccess = updateCustomer({ customerid, values, bodyPart });
+
+    console.log("out fromm");
     if (updateSuccess) {
       toast.info("Updated Values");
     }
-    console.log("change ", customerid, values, bodyPart);
+    console.log("change :", customerid, values, bodyPart);
   }
 
   return (
     <ToastProvider>
       <Form {...form}>
-        <form
-          className="w-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit(handleSubmit);
-          }}
-        >
+        <form className="w-full" onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="flex flex-col gap-2 ">
             <div className="grid grid-cols-2 gap-2  ">
               {formInputFields.map((formField) => {
@@ -115,7 +111,7 @@ export default function MeasurementForm({
               <DeleteDialog customerId={customerid} />
 
               <Button variant="outline">
-                <Link variant="button" href={`/newOrder/${customerid}`} >
+                <Link variant="button" href={`/newOrder/${customerid}`}>
                   New Order
                 </Link>
               </Button>

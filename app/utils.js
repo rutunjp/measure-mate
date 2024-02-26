@@ -12,6 +12,7 @@ export async function connectToDatabase() {
   try {
     await client.connect();
     console.log("Connected to MongoDB");
+    await initializeCounter();
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     throw error;
@@ -28,11 +29,12 @@ export async function closeDatabaseConnection() {
   }
 }
 const database = client.db("measure-mate");
-const collection = database.collection("customers");
+const customersCollection = database.collection("customers");
+const ordersCollection = database.collection("orders");
 
 export async function getCustomers() {
   try {
-    const data = await collection.find().toArray();
+    const data = await customersCollection.find().toArray();
     const customers = data.map((customer) => ({
       ...customer,
       _id: customer._id.toString(),
@@ -46,7 +48,7 @@ export async function getCustomers() {
 
 export async function addCustomer({ name }) {
   try {
-    await collection.insertOne({ name: name });
+    await customersCollection.insertOne({ name: name });
     console.log("Inserted new customer:", name);
 
     return 1;
@@ -64,7 +66,9 @@ export async function updateCustomer({ bodyPart, values, customerid }) {
     const filter = { _id: customerId };
 
     const update = { $set: { [bodyPart]: values } };
-    const result = await collection.updateOne(filter, update, { upsert: true });
+    const result = await customersCollection.updateOne(filter, update, {
+      upsert: true,
+    });
 
     if (result.modifiedCount === 0) {
       console.log(`No document matched the filter: ${filter}`);
@@ -83,7 +87,7 @@ export async function deleteCustomer(customerid) {
     const customerId = new ObjectId(customerid);
     const filter = { _id: customerId };
 
-    const result = await collection.deleteOne(filter);
+    const result = await customersCollection.deleteOne(filter);
     if (result.modifiedCount === 0) {
       console.log(`DETELEEL document matched the filter: ${filter}`);
     } else {
@@ -93,5 +97,80 @@ export async function deleteCustomer(customerid) {
     }
   } catch (error) {
     console.error("Error updating customer:", error);
+  }
+}
+
+async function initializeCounter() {
+  await ordersCollection.insertOne({ _id: "orderNo", sequenceValue: 0 });
+}
+
+async function getNextOrderNo() {
+  const counter = await ordersCollection.findOneAndUpdate(
+    { _id: "orderNo" },
+    { $inc: { sequenceValue: 1 } },
+    { returnDocument: "after" }
+  );
+  return counter.value.sequenceValue;
+}
+
+export async function insertOrder(orderData) {
+  const orderNo = await getNextOrderNo(database);
+  try {
+    await ordersCollection.insertOne({ ...orderData, orderNo });
+    console.log("Inserted new customer:", orderData);
+    return 1;
+  } catch (error) {
+    console.error("Error adding new customer to MongoDB:", error);
+    throw error;
+  }
+}
+
+export async function getOrders() {
+  try {
+    const orders = await ordersCollection.find().toArray();
+    console.log("Fetched orders:", orders);
+    return orders;
+  } catch (error) {
+    console.error("Error fetching customers");
+    throw error;
+  }
+}
+
+export async function updateOrder({ orderNo, values }) {
+  try {
+    const order = new ObjectId(orderNo);
+    const filter = { _id: orderNo };
+
+    const update = { $set: { [order]: values } };
+    const result = await ordersCollection.updateOne(filter, update, {
+      upsert: true,
+    });
+
+    if (result.modifiedCount === 0) {
+      console.log(`No document matched the filter: ${filter}`);
+    } else {
+      console.log(`Customer updated successfully. Shirt: ${values}`);
+      return 1;
+    }
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    return 0;
+  }
+}
+
+export async function deleteOrder({ orderNo }) {
+  try {
+    const order = new ObjectId(orderNo);
+    const filter = { _id: order };
+    const result = await ordersCollection.deleteOne(filter);
+    if (result.modifiedCount === 0) {
+      console.log(`No order matched the filter: ${filter}`);
+    } else {
+      console.log("Order deleted successfully.");
+      return 1;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 }
